@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer</title>
+    <style>
+        .container{
+            margin: auto;
+            display: grid;
+            width: 600px;
+            height: 100px;
+        }
+        .forelements{
+            display: flex;
+            width: 300px;
+            height: 50px;
+            justify-content: space-around;
+            font-size: large;
+        }
+        input{
+            width: 50px ;
+            height: 30px;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="forelements">  
+    <label for="hours1">Hours:</label>
+    <label for="minutes1">Minutes:</label>
+    <label for="seconds1">Seconds:</label>
+        </div>
+        <div class="forelements">
+    <input type="number" id="hours1">
+    <input type="number" id="minutes1">
+    <input type="number" id="seconds1">
+        </div>
+        <div class="forelements">
+            <button id="startbutton" onclick="start">Start</button>
+            <button id="pausebutton" onclick="Pause">Pause</button>
+            <button id="resetbutton" onclick="Reset">Reset</button>
+        </div>
+        <div class="forelements displaytime">
+            <span id="hours2">:</span>
+            <span id="minutes2">:</span>
+            <span id="seconds2"></span>
+        </div>
+        <label>Циклічно чи ні?</label><input id="" type="checkbox">
+</div>
+</body>
+</html>
