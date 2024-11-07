@@ -5,49 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timer</title>
     <style>
-        .container{
-            margin: auto;
+        .container {
+            margin-left: 40%;
             display: grid;
-            width: 600px;
+            width: 800px;
             height: 100px;
         }
-        .forelements{
+        .forelements {
             display: flex;
-            width: 300px;
+            width: 400px;
             height: 50px;
             justify-content: space-around;
-            font-size: large;
         }
-        input{
-            width: 50px ;
+        .displaytime{
+            font: 4em sans-serif;
+        }
+        input {
+            width: 50px;
             height: 30px;
         }
+        label{
+            font: 2em sans-serif;
+        }
     </style>
-    
 </head>
 <body>
     <div class="container">
         <div class="forelements">  
-    <label for="hours1">Hours:</label>
-    <label for="minutes1">Minutes:</label>
-    <label for="seconds1">Seconds:</label>
+            <label for="hours1">Hours</label>
+            <label for="minutes1">Minutes</label>
+            <label for="seconds1">Seconds</label>
         </div>
         <div class="forelements">
-    <input type="number" id="hours1">
-    <input type="number" id="minutes1">
-    <input type="number" id="seconds1">
+            <input type="number" id="hours1">
+            <input type="number" id="minutes1">
+            <input type="number" id="seconds1">
         </div>
         <div class="forelements">
-            <button id="startbutton" onclick="start">Start</button>
-            <button id="pausebutton" onclick="Pause">Pause</button>
-            <button id="resetbutton" onclick="Reset">Reset</button>
+            <button id="startbutton" onclick="start()">Start</button>
+            <button id="pausebutton" onclick="pause()">Play/Pause</button>
+            <button id="resetbutton" onclick="reset()">Reset</button>
         </div>
         <div class="forelements displaytime">
-            <span id="hours2">:</span>
-            <span id="minutes2">:</span>
-            <span id="seconds2"></span>
+            <span id="hours2">00</span>:
+            <span id="minutes2">00</span>:
+            <span id="seconds2">00</span>
         </div>
-        <label>Циклічно чи ні?</label><input id="" type="checkbox">
-</div>
+        <div class="forelements">
+        <p>
+        <label>Циклічно чи ні? <input id="repeatCheckbox" type="checkbox"></label>
+        </div>
+    </div>
+    <script>
+        let timerInterval;
+        let totalSeconds;
+        let ispaused = false;
+
+        function start() {
+            const hours = parseInt(document.getElementById("hours1").value) || 0;
+            const minutes = parseInt(document.getElementById("minutes1").value) || 0;
+            const seconds = parseInt(document.getElementById("seconds1").value) || 0;
+            totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+            if (totalSeconds > 0) {
+                if (ispaused) {
+                    ispaused = false;
+                } else {
+                    updateDisplay(hours, minutes, seconds);
+                }
+                timerInterval = setInterval(updateTimer, 1000);
+                document.title = formatTime(hours, minutes, seconds);
+            }
+        }
+
+        function pause() {
+            if (ispaused){
+                timerInterval = setInterval(updateTimer, 1000);
+                ispaused = false;
+            } else {
+            clearInterval(timerInterval);
+            ispaused = true;
+            }
+        }
+
+        function reset() {
+            clearInterval(timerInterval);
+            totalSeconds = 0;
+            updateDisplay(0, 0, 0);
+            document.title = "Timer";
+            ispaused = false;
+        }
+
+        function updateTimer() {
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                if (document.getElementById("repeatCheckbox").checked) {
+                    start();
+                }
+                showNotification();
+                return;
+            } else {
+            
+            totalSeconds--;
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            updateDisplay(hours, minutes, seconds);
+            document.title = formatTime(hours, minutes, seconds);
+            }
+        }
+
+        function updateDisplay(hours, minutes, seconds) {
+            document.getElementById("hours2").textContent = String(hours).padStart(2, '0');
+            document.getElementById("minutes2").textContent = String(minutes).padStart(2, '0');
+            document.getElementById("seconds2").textContent = String(seconds).padStart(2, '0');
+        }
+
+        function formatTime(hours, minutes, seconds) {
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function showNotification() {
+                new Notification("Time's up!");
+
+}
+
+        // Handle GET parameters for starting the timer
+        function parseGETParams() {
+            const params = new URLSearchParams(window.location.search);
+            const hours = parseInt(params.get('hours')) || 0;
+            const minutes = parseInt(params.get('minutes')) || 0;
+            const seconds = parseInt(params.get('seconds')) || 0;
+            document.getElementById('hours1').value = hours;
+            document.getElementById('minutes1').value = minutes;
+            document.getElementById('seconds1').value = seconds;
+            totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            if (totalSeconds > 0) {
+                updateDisplay(hours, minutes, seconds);
+            }
+        }
+
+        // Check GET params when page loads
+        window.onload = function() {
+            if (Notification.permission === "default") {  Notification.requestPermission();}
+            parseGETParams();
+        };
+    </script>
 </body>
 </html>
