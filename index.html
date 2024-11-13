@@ -137,7 +137,7 @@
             const hours = parseInt(params.get('hours')) || 0;
             const minutes = parseInt(params.get('minutes')) || 0;
             const seconds = parseInt(params.get('seconds')) || 0;
-            const repeat = params.get('repeat') === 1;
+            const repeat = parseInt(params.get('repeat')) === 1;
             document.getElementById('hours1').value = hours;
             document.getElementById('minutes1').value = minutes;
             document.getElementById('seconds1').value = seconds;
