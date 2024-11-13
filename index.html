@@ -8,8 +8,6 @@
         .container {
             margin-left: 40%;
             display: grid;
-            width: 800px;
-            height: 100px;
         }
         .forelements {
             display: flex;
@@ -57,23 +55,23 @@
         </div>
     </div>
     <script>
-        let timerInterval;
-        let totalSeconds;
+        let timerinterval;
+        let totalseconds;
         let ispaused = false;
 
         function start() {
             const hours = parseInt(document.getElementById("hours1").value) || 0;
             const minutes = parseInt(document.getElementById("minutes1").value) || 0;
             const seconds = parseInt(document.getElementById("seconds1").value) || 0;
-            totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            totalseconds = hours * 3600 + minutes * 60 + seconds;
 
-            if (totalSeconds > 0) {
+            if (totalseconds > 0) {
                 if (ispaused) {
                     ispaused = false;
                 } else {
                     updateDisplay(hours, minutes, seconds);
                 }
-                timerInterval = setInterval(updateTimer, 1000);
+                timerinterval = setInterval(updateTimer, 1000);
                 document.title = formatTime(hours, minutes, seconds);
             } else{
                 alert("Incorrect time");
@@ -82,25 +80,25 @@
 
         function pause() {
             if (ispaused){
-                timerInterval = setInterval(updateTimer, 1000);
+                timerinterval = setInterval(updateTimer, 1000);
                 ispaused = false;
             } else {
-            clearInterval(timerInterval);
+            clearInterval(timerinterval);
             ispaused = true;
             }
         }
 
         function reset() {
-            clearInterval(timerInterval);
-            totalSeconds = 0;
+            clearInterval(timerinterval);
+            totalseconds = 0;
             updateDisplay(0, 0, 0);
             document.title = "Timer";
             ispaused = false;
         }
 
         function updateTimer() {
-            if (totalSeconds <= 0) {
-                clearInterval(timerInterval);
+            if (totalseconds <= 0) {
+                clearInterval(timerinterval);
                 if (document.getElementById("repeatCheckbox").checked) {
                     start();
                 }
@@ -108,10 +106,10 @@
                 return;
             } else {
             
-            totalSeconds--;
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
+            totalseconds--;
+            const hours = Math.floor(totalseconds / 3600);
+            const minutes = Math.floor((totalseconds % 3600) / 60);
+            const seconds = totalseconds % 60;
             
             updateDisplay(hours, minutes, seconds);
             document.title = formatTime(hours, minutes, seconds);
@@ -129,29 +127,30 @@
         }
 
         function showNotification() {
-                new Notification("Time's up!");
+                alert("Time ends");
+                new Notification("Time ends");
 
 }
 
-        // Handle GET parameters for starting the timer
-        function parseGETParams() {
+        function GetParametrs() {
             const params = new URLSearchParams(window.location.search);
             const hours = parseInt(params.get('hours')) || 0;
             const minutes = parseInt(params.get('minutes')) || 0;
             const seconds = parseInt(params.get('seconds')) || 0;
+            const repeat = params.get('repeat') || false;
             document.getElementById('hours1').value = hours;
             document.getElementById('minutes1').value = minutes;
             document.getElementById('seconds1').value = seconds;
-            totalSeconds = hours * 3600 + minutes * 60 + seconds;
-            if (totalSeconds > 0) {
+            document.getElementById('repeatCheckbox').checked = repeat;
+            totalseconds = hours * 3600 + minutes * 60 + seconds;
+            if (totalseconds > 0) {
                 updateDisplay(hours, minutes, seconds);
             }
         }
 
-        // Check GET params when page loads
         window.onload = function() {
-            if (Notification.permission === "default") {  Notification.requestPermission();}
-            parseGETParams();
+            if (Notification.permission === "denied") {  Notification.requestPermission();}
+            GetParametrs();
         };
     </script>
 </body>
